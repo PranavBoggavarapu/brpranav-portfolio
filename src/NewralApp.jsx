@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 const CATEGORIES = ["All", "Research", "Industry", "Products", "Policy"];
+const CONTENT_URL = `${import.meta.env.BASE_URL}data/content.json`;
 
 const FALLBACK = {
   updatedAt: new Date().toISOString(),
@@ -38,7 +39,7 @@ export default function NewralApp() {
   const [theme, setTheme] = useState(() => localStorage.getItem("newral-theme") || "dark");
   const [category, setCategory] = useState("All");
   const [payload, setPayload] = useState(FALLBACK);
-  const [status, setStatus] = useState({ syncing: false, mode: "fallback" });
+  const [status, setStatus] = useState({ syncing: false, mode: "fallback", note: "Static mode" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,20 +53,15 @@ export default function NewralApp() {
     const hydrate = async () => {
       try {
         setLoading(true);
-        const [newsRes, toolsRes, statusRes] = await Promise.all([
-          fetch("/api/news"),
-          fetch("/api/tools"),
-          fetch("/api/status"),
-        ]);
+        const contentRes = await fetch(CONTENT_URL, { cache: "no-store" });
         if (!mounted) return;
-        const news = await newsRes.json();
-        const tools = await toolsRes.json();
-        const meta = await statusRes.json();
-        setPayload({
-          ...news,
-          tools: tools.tools || [],
+        const content = await contentRes.json();
+        setPayload(content);
+        setStatus({
+          syncing: false,
+          mode: content.mode || "static-published",
+          note: content.statusNote || "Published from GitHub Pages",
         });
-        setStatus(meta);
       } catch (error) {
         console.error("Initial load failed:", error);
       } finally {
@@ -74,29 +70,9 @@ export default function NewralApp() {
     };
 
     hydrate();
-    const interval = setInterval(hydrate, 60000);
-
-    const stream = new EventSource("/api/stream");
-    stream.addEventListener("news-updated", (event) => {
-      try {
-        const next = JSON.parse(event.data);
-        setPayload((prev) => ({ ...prev, ...next }));
-      } catch (error) {
-        console.error("Unable to parse stream payload:", error);
-      }
-    });
-    stream.addEventListener("status", (event) => {
-      try {
-        setStatus(JSON.parse(event.data));
-      } catch (error) {
-        console.error("Unable to parse status payload:", error);
-      }
-    });
 
     return () => {
       mounted = false;
-      clearInterval(interval);
-      stream.close();
     };
   }, []);
 
@@ -154,8 +130,9 @@ export default function NewralApp() {
       <main className="main">
         <section className="status">
           <span>{dateLabel}</span>
-          <span>{status.syncing ? "Syncing feeds..." : "Live sync running"}</span>
+          <span>{status.syncing ? "Refreshing content..." : "Auto-published from GitHub Pages"}</span>
           <span>Mode: {status.mode || "fallback"}</span>
+          <span>{status.note}</span>
         </section>
 
         <section className="hero-grid">

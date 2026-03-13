@@ -1,0 +1,38 @@
+{
+  "updatedAt": "2026-03-13T07:07:06.379Z",
+  "mode": "static-fallback",
+  "statusNote": "Static build is using fallback content.",
+  "ticker": [
+    "AI coverage will refresh automatically when GitHub Actions runs.",
+    "Weekly tools are curated into the static site build."
+  ],
+  "hero": {
+    "id": "seed",
+    "title": "Newral is ready for free GitHub Pages deployment",
+    "summary": "This build publishes AI and emerging tech updates as static content so the site can stay free to host.",
+    "category": "Industry",
+    "source": "Newral Editorial",
+    "publishedAt": "2026-03-13T07:07:06.380Z",
+    "readTime": "3 min read",
+    "link": "https://github.com/PranavBoggavarapu/newral-ai-news"
+  },
+  "stories": [],
+  "tools": [
+    {
+      "name": "Cursor",
+      "tagline": "AI native code editor",
+      "description": "Understands repository context and accelerates developer workflows.",
+      "category": "Code",
+      "badge": "HOT",
+      "pricing": "Freemium"
+    },
+    {
+      "name": "Perplexity Pro",
+      "tagline": "Research with cited answers",
+      "description": "Useful for fast research briefs and source-backed answers.",
+      "category": "Research",
+      "badge": "NEW",
+      "pricing": "$20/mo"
+    }
+  ]
+}
