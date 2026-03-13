@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-13T07:07:06.379Z",
+  "updatedAt": "2026-03-13T07:22:01.768Z",
   "mode": "static-fallback",
   "statusNote": "Static build is using fallback content.",
   "ticker": [
@@ -12,7 +12,7 @@
     "summary": "This build publishes AI and emerging tech updates as static content so the site can stay free to host.",
     "category": "Industry",
     "source": "Newral Editorial",
-    "publishedAt": "2026-03-13T07:07:06.380Z",
+    "publishedAt": "2026-03-13T07:22:01.769Z",
     "readTime": "3 min read",
     "link": "https://github.com/PranavBoggavarapu/newral-ai-news"
   },

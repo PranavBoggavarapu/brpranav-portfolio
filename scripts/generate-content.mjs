@@ -11,6 +11,7 @@ const OUTPUT_DIR = path.join(ROOT, "public", "data");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "content.json");
 
 const parser = new Parser();
+const REQUEST_TIMEOUT_MS = 12000;
 
 const FEEDS = [
   "https://openai.com/news/rss.xml",
@@ -92,7 +93,7 @@ function dedupe(items) {
 
 async function fetchToolsFromHn() {
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       "https://hn.algolia.com/api/v1/search_by_date?query=show%20hn%20ai&tags=story&hitsPerPage=12"
     );
     const data = await response.json();
@@ -106,6 +107,17 @@ async function fetchToolsFromHn() {
     }));
   } catch {
     return FALLBACK.tools;
+  }
+}
+
+async function fetchWithTimeout(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -147,7 +159,9 @@ async function fetchStories() {
 
   for (const feed of FEEDS) {
     try {
-      const parsed = await parser.parseURL(feed);
+      const response = await fetchWithTimeout(feed);
+      const xml = await response.text();
+      const parsed = await parser.parseString(xml);
       for (const item of parsed.items || []) {
         const publishedAt = new Date(item.isoDate || item.pubDate || Date.now()).getTime();
         if (publishedAt < cutoff) continue;
