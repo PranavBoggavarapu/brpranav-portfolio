@@ -1,12 +1,12 @@
 {
-  "name": "newral-ai-news",
+  "name": "pranav-portfolio",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "dev:ui": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
     "generate:content": "node scripts/generate-content.mjs"
   },
